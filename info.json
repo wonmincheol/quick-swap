@@ -1,0 +1,9 @@
+{
+  "name": "quick-swap-belt",
+  "version": "0.2.6",
+  "title": "Quick Swap Belt",
+  "author": "quick-swap-belt contributors",
+  "factorio_version": "2.0",
+  "dependencies": ["base >= 2.0.0"],
+  "description": "Quickly swap held belts, underground belts, and splitters with the mouse wheel."
+}

@@ -1,0 +1,7 @@
+# Factorio package artifacts
+quick-swap-belt_*.zip
+dist/
+
+# Local Factorio runtime output
+factorio-current.log
+factorio-previous.log

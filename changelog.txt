@@ -1,0 +1,62 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.2.6
+Date: 2026-09-04
+  Bugfixes:
+    - Allow belt swaps whenever at least one matching target item is available.
+    - Use the target's actual available quantity when setting the cursor stack.
+    - Skip unavailable intermediate tiers when cycling in either Control-wheel direction.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.7
+Date: 2026-09-04
+  Bugfixes:
+    - Factorio 2.1 package of the 0.2.6 partial-stack and tier-skip fixes.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.4
+Date: 2026-09-04
+  Bugfixes:
+    - Allow a full transport-belt stack to switch to an underground belt or splitter.
+    - Return the original belt stack to inventory when the target item's stack limit is smaller.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.5
+Date: 2026-09-04
+  Bugfixes:
+    - Factorio 2.1 package of the 0.2.4 full-stack swap fix.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 2026-09-04
+  Bugfixes:
+    - Classify belt tiers using the runtime `belt_speed` property.
+    - Fix Shift type swaps for yellow belts and prevent cross-tier fallbacks.
+    - Fix Control tier swaps, including Space Age and compatible mod-added tiers.
+    - Consume the Shift/Control mouse-wheel bindings to prevent simultaneous zooming.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+Date: 2026-09-04
+  Bugfixes:
+    - Factorio 2.1 package of the 0.2.2 belt-tier and mouse-wheel fixes.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 2026-09-04
+  Changes:
+    - Adds a separately packaged Factorio 2.1-compatible release.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 2026-09-04
+  Features:
+    - Swap the held belt type with Shift + mouse wheel.
+    - Swap the held belt tier with Control + mouse wheel.
+    - Supports unlocked belt items in remote view and inventory-only swapping while controlling a character.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2026-09-04
+  Features:
+    - Initial Factorio 2.0 mod foundation.
+    - Adds a configurable Quick Swap Belt mode toggle (default: Control + B).
