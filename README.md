@@ -8,7 +8,8 @@ The planned behavior is defined in [the Korean feature specification](docs/FEATU
 
 - Valid Factorio 2.0 manifest in `info.json`.
 - Four namespaced mouse-wheel inputs, rebindable in Controls.
-- Dynamic belt catalogue that includes standard compatible content from other mods.
+- Dynamic catalogue for belts, pipes, and electric poles, including compatible
+  content from other mods.
 - English localisation and a Mod Portal-compatible changelog.
 - No DLC-specific feature flags and no direct edits to another mod's prototypes.
   It can therefore load in vanilla Factorio 2.0 and with Space Age or other mods.
@@ -16,19 +17,30 @@ The planned behavior is defined in [the Korean feature specification](docs/FEATU
 The mod swaps the held belt, underground belt, or splitter according to the
 [feature specification](docs/FEATURE_SPEC.md). It uses each placed entity's
 `belt_speed`, so vanilla, Space Age, and compatible mod-added tiers stay
-separate. Character control consumes only matching inventory items; remote
-control can select force-unlocked candidates. The wheel binding is consumed by
-the mod so it does not also zoom the view. Swapping uses the amount actually
-available (up to the target item's stack limit) and returns the original belts
-to inventory.
+separate. Shift-wheel also swaps pipes with underground pipes, and steps
+through electric poles from wooden poles up to substations without wrapping;
+unavailable intermediate poles are skipped. Character control in game view
+consumes only matching inventory items. TAB/map view and remote control ignore
+inventory and select only force-unlocked items while preserving the remote
+cursor quality already selected through Factorio. Vanilla wheel behavior remains
+available when no swap occurs, including cycling blueprints in a blueprint
+book. After a successful swap, the zoom limits are temporarily locked at the
+current level so the camera does not move, then restored on the following tick.
+Swapping uses the amount actually available (up to the target item's stack
+limit) and returns the original stack to inventory. When the target exists in
+multiple qualities, it always uses the highest quality available for that item.
 
 ## Install for development
 
 1. Place this folder in Factorio's `mods` directory as `quick-swap-belt`, or
-   package it as `quick-swap-belt_0.2.6.zip` with these files at the archive root.
+   package it as `quick-swap-belt_0.2.8.zip` with these files at the archive root.
 2. Start Factorio, enable **Quick Swap Belt**, then load or create a save.
-3. Hold a belt, underground belt, or splitter and use `Shift + mouse wheel` or
-   `Control + mouse wheel`.
+3. Hold a belt, pipe, underground pipe, or electric pole and use
+   `Shift + mouse wheel`. `Control + mouse wheel` changes belt tiers.
+
+The Controls menu names these bindings **Quick item swap** (Shift-wheel by
+default) and **Belt tier swap** (Control-wheel by default). Each wheel direction
+can be rebound independently by the player.
 
 When releasing, update both `info.json` and `changelog.txt`; name the archive
 `quick-swap-belt_<version>.zip`.
@@ -40,8 +52,8 @@ manifest targets every 2.0.x release. Use the packaging script to create a
 separate, installable archive for each supported major version:
 
 ```powershell
-.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.2.6
-.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.2.7
+.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.2.8
+.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.2.9
 ```
 
 The resulting archives are written to `dist\Factorio-2.0` and

@@ -9,7 +9,7 @@ param(
 )
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$versions = @{ "2.0" = "0.2.6"; "2.1" = "0.2.7" }
+$versions = @{ "2.0" = "0.2.8"; "2.1" = "0.2.9" }
 if (-not $ModVersion) {
   $ModVersion = $versions[$FactorioVersion]
 }

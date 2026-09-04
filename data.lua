@@ -9,10 +9,13 @@ local inputs = {
 
 for _, input in ipairs(inputs) do
   input.type = "custom-input"
-  -- Custom inputs cannot decide at runtime whether to consume the input. Use
-  -- game-only so the wheel never also triggers the game's zoom action while a
-  -- belt swap binding is pressed.
-  input.consuming = "game-only"
+  -- Remote/map controllers are treated as spectating for custom-input
+  -- dispatch. Without this flag the wheel event never reaches control.lua.
+  input.enabled_while_spectating = true
+  -- Let Factorio process the same wheel input so context-sensitive vanilla
+  -- actions, such as cycling a blueprint book, remain available. When a swap
+  -- succeeds, control.lua temporarily locks zoom until the following tick.
+  input.consuming = "none"
   input.action = "lua"
 end
 

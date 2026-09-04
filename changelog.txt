@@ -60,3 +60,26 @@ Date: 2026-09-04
   Features:
     - Initial Factorio 2.0 mod foundation.
     - Adds a configurable Quick Swap Belt mode toggle (default: Control + B).
+---------------------------------------------------------------------------------------------------
+Version: 0.2.8
+Date: 2026-09-04
+  Features:
+    - Support Shift-wheel and Control-wheel swaps in TAB/map view without requiring inventory items.
+    - Keep the pre-swap quality in TAB/map and remote view, limited to force-unlocked items and qualities.
+    - Read and replace the remote-view cursor ghost so wheel swaps work without a physical cursor stack.
+    - Enable all four custom inputs while spectating so remote/map controllers receive the wheel events.
+    - Preserve legendary remote cursor quality without rejecting all swap candidates through a redundant quality-unlock check.
+    - Cycle between normal and underground pipes with Shift + mouse wheel.
+    - Step through electric poles in ascending or descending order with Shift + mouse wheel, without wrapping at either end.
+    - Skip unavailable intermediate electric poles when moving in either direction.
+    - Keep belt, pipe, and electric-pole swaps isolated to their own groups.
+    - Use the highest available target quality for belt, pipe, and electric-pole swaps.
+  Changes:
+    - Preserve vanilla wheel actions when no swap occurs, including blueprint-book cycling and normal zoom.
+    - Temporarily lock the current zoom during a successful swap instead of restoring the camera after it moves.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.2.9
+Date: 2026-09-04
+  Features:
+    - Factorio 2.1 package of the 0.2.8 pipe and electric-pole swapping feature.
