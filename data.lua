@@ -1,10 +1,10 @@
 -- Prototype-stage entry point. Every input is namespaced to avoid conflicts
 -- with Factorio, DLC, and other mods.
 local inputs = {
-  { name = "quick-swap-belt-cycle-kind-next", key_sequence = "SHIFT + mouse-wheel-up" },
-  { name = "quick-swap-belt-cycle-kind-previous", key_sequence = "SHIFT + mouse-wheel-down" },
-  { name = "quick-swap-belt-cycle-tier-next", key_sequence = "CONTROL + mouse-wheel-up" },
-  { name = "quick-swap-belt-cycle-tier-previous", key_sequence = "CONTROL + mouse-wheel-down" }
+  { name = "quick-swap-cycle-kind-next", key_sequence = "SHIFT + mouse-wheel-up" },
+  { name = "quick-swap-cycle-kind-previous", key_sequence = "SHIFT + mouse-wheel-down" },
+  { name = "quick-swap-cycle-tier-next", key_sequence = "CONTROL + mouse-wheel-up" },
+  { name = "quick-swap-cycle-tier-previous", key_sequence = "CONTROL + mouse-wheel-down" }
 }
 
 for _, input in ipairs(inputs) do

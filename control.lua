@@ -92,7 +92,7 @@ local function cycle(kind, direction)
   end
 end
 
-script.on_event("quick-swap-belt-cycle-kind-next", cycle("kind", 1))
-script.on_event("quick-swap-belt-cycle-kind-previous", cycle("kind", -1))
-script.on_event("quick-swap-belt-cycle-tier-next", cycle("tier", 1))
-script.on_event("quick-swap-belt-cycle-tier-previous", cycle("tier", -1))
+script.on_event("quick-swap-cycle-kind-next", cycle("kind", 1))
+script.on_event("quick-swap-cycle-kind-previous", cycle("kind", -1))
+script.on_event("quick-swap-cycle-tier-next", cycle("tier", 1))
+script.on_event("quick-swap-cycle-tier-previous", cycle("tier", -1))

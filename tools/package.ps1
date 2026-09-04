@@ -15,9 +15,9 @@ if (-not $ModVersion) {
 }
 
 $outputDirectory = Join-Path $projectRoot ("dist\\Factorio-" + $FactorioVersion)
-$archivePath = Join-Path $outputDirectory ("quick-swap-belt_" + $ModVersion + ".zip")
-$temporaryRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("quick-swap-belt-" + [guid]::NewGuid())
-$stagingDirectory = Join-Path $temporaryRoot ("quick-swap-belt_" + $ModVersion)
+$archivePath = Join-Path $outputDirectory ("quick-swap_" + $ModVersion + ".zip")
+$temporaryRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("quick-swap-" + [guid]::NewGuid())
+$stagingDirectory = Join-Path $temporaryRoot ("quick-swap_" + $ModVersion)
 
 try {
   New-Item -ItemType Directory -Path $stagingDirectory -Force | Out-Null

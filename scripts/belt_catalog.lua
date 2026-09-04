@@ -84,10 +84,16 @@ function catalog.find_kind_target(current, direction, usable)
   local index
   for i, kind in ipairs(kinds) do if kind == current.kind then index = i break end end
   if not index then return nil end
-  local target_kind = kinds[((index - 1 + direction) % #kinds) + 1]
-  for _, candidate in ipairs(catalog.by_kind[target_kind]) do
-    if (current.family ~= "belt" or candidate.belt_speed == current.belt_speed)
-      and usable(candidate) then return candidate end
+  -- A group does not necessarily contain every prototype kind. Walk the whole
+  -- cycle so an unavailable kind is skipped instead of stopping the swap. Do
+  -- not revisit the current kind: with no alternative, vanilla wheel handling
+  -- should remain available.
+  for offset = 1, #kinds - 1 do
+    local target_kind = kinds[((index - 1 + direction * offset) % #kinds) + 1]
+    for _, candidate in ipairs(catalog.by_kind[target_kind]) do
+      if (current.family ~= "belt" or candidate.belt_speed == current.belt_speed)
+        and usable(candidate) then return candidate end
+    end
   end
 end
 

@@ -1,8 +1,8 @@
 {
-  "name": "quick-swap-belt",
+  "name": "quick-swap",
   "version": "0.2.8",
-  "title": "Quick Swap Belt",
-  "author": "quick-swap-belt contributors",
+  "title": "Quick Swap",
+  "author": "quick-swap contributors",
   "factorio_version": "2.0",
   "dependencies": ["base >= 2.0.0"],
   "description": "Quickly swap held belts, pipes, and electric poles with the mouse wheel."

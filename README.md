@@ -1,8 +1,10 @@
-# Quick Swap Belt
+# Quick Swap
 
-Factorio 2.0+ mod foundation for a future quick belt-swap feature.
+Factorio 2.0+ mod for quickly swapping belts, pipes, and electric poles with
+the mouse wheel.
 
-The planned behavior is defined in [the Korean feature specification](docs/FEATURE_SPEC.md).
+The implemented behavior is documented in
+[the Korean feature specification](docs/FEATURE_SPEC.md).
 
 ## What is included
 
@@ -32,9 +34,10 @@ multiple qualities, it always uses the highest quality available for that item.
 
 ## Install for development
 
-1. Place this folder in Factorio's `mods` directory as `quick-swap-belt`, or
-   package it as `quick-swap-belt_0.2.8.zip` with these files at the archive root.
-2. Start Factorio, enable **Quick Swap Belt**, then load or create a save.
+1. Place this folder in Factorio's `mods` directory as `quick-swap`, or run the
+   packaging script to create `quick-swap_0.2.8.zip`. The archive contains a
+   top-level `quick-swap_0.2.8` directory, as Factorio expects.
+2. Start Factorio, enable **Quick Swap**, then load or create a save.
 3. Hold a belt, pipe, underground pipe, or electric pole and use
    `Shift + mouse wheel`. `Control + mouse wheel` changes belt tiers.
 
@@ -43,7 +46,7 @@ default) and **Belt tier swap** (Control-wheel by default). Each wheel direction
 can be rebound independently by the player.
 
 When releasing, update both `info.json` and `changelog.txt`; name the archive
-`quick-swap-belt_<version>.zip`.
+`quick-swap_<version>.zip`.
 
 ## Factorio-version support
 
@@ -63,12 +66,18 @@ archives use the same internal mod name and must not be enabled together.
 ## Compatibility rules for future work
 
 - Prefix every new prototype, setting, custom input, GUI element, and remote
-  interface with `quick-swap-belt-`.
+  interface with `quick-swap-`.
 - Treat other mods and DLC content as optional: guard every lookup before use
   and avoid assuming a specific belt tier or item exists.
 - Keep persistent data as simple serializable values in `storage`; use
   migrations when changing its shape.
 - Keep all simulation-affecting code deterministic for multiplayer and replays.
+
+## Acknowledgements
+
+This mod was developed in collaboration with OpenAI Codex, which assisted with
+implementation review, documentation consistency checks, and release-package
+validation.
 
 ## Official references
 
