@@ -18,6 +18,7 @@ $outputDirectory = Join-Path $projectRoot ("dist\\Factorio-" + $FactorioVersion)
 $archivePath = Join-Path $outputDirectory ("quick-swap_" + $ModVersion + ".zip")
 $temporaryRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("quick-swap-" + [guid]::NewGuid())
 $stagingDirectory = Join-Path $temporaryRoot ("quick-swap_" + $ModVersion)
+$excludedScriptExtensions = @(".exe", ".bat", ".ps1", ".sh", ".py")
 
 try {
   New-Item -ItemType Directory -Path $stagingDirectory -Force | Out-Null
@@ -26,6 +27,11 @@ try {
       Copy-Item -LiteralPath $item.FullName -Destination $stagingDirectory -Recurse -Force
     }
   }
+
+  # Development and packaging tools are not part of the Factorio runtime.
+  Get-ChildItem -LiteralPath $stagingDirectory -Recurse -File |
+    Where-Object { $_.Extension.ToLowerInvariant() -in $excludedScriptExtensions } |
+    Remove-Item -Force
 
   $manifestPath = Join-Path $stagingDirectory "info.json"
   $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
