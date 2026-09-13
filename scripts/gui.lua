@@ -14,10 +14,6 @@ local function stretch(parent, action)
   e.style.horizontally_stretchable = true
   return e
 end
-local function find_group(draft, id)
-  for i, g in ipairs(draft.groups) do if g.id == id then return g, i end end
-end
-
 function M.ensure_button(player)
   if not player.gui.top["quick-swap-open"] then
     add(player.gui.top, "button", "open", { caption = "Quick Swap", tooltip = loc("open") })
@@ -143,7 +139,7 @@ local function prompt(player, action, id)
   local field = row["quick-swap-name"]
   field.visible = action == "rename"
   if action == "rename" then
-    local g = find_group(state.draft, id)
+    local g = groups.find(state.draft, id)
     field.text = type(g.title) == "string" and g.title or ""
     field.focus(); field.select_all()
   end
@@ -181,7 +177,7 @@ function M.click(event)
       message(player, "order-help")
     end
   elseif action == "slot" and event.button == defines.mouse_button_type.right then
-    local g = find_group(state.draft, e.tags.group)
+    local g = groups.find(state.draft, e.tags.group)
     if g and g.cells[e.tags.slot] then
       g.cells[e.tags.slot] = nil; groups.trim(g); state.dirty = true
       render_slots(player, g, e.parent); message(player)
@@ -203,7 +199,7 @@ function M.click(event)
   elseif action == "confirm" and state.pending then
     local p = state.pending
     if p.action == "discard" then M.close(player); return end
-    local g, index = find_group(state.draft, p.group)
+    local g, index = groups.find(state.draft, p.group)
     if g then
       if p.action == "delete" then
         table.remove(state.draft.groups, index)
@@ -226,7 +222,7 @@ function M.changed(event)
   if not M.is_open(player) then return end
   local state, tags = groups.get(player.index), e.tags
   if tags.action == "master" then state.draft.enabled = e.state; state.dirty = true; return end
-  local g = find_group(state.draft, tags.group)
+  local g = groups.find(state.draft, tags.group)
   if not g then return end
   if tags.action == "slot" then
     local name = e.elem_value

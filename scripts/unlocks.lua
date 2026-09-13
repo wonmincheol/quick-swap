@@ -1,8 +1,8 @@
 local groups = require("scripts.groups")
 local M = {}
-local cache = {}
+local cache, filter_cache = {}, {}
 
-function M.invalidate() cache = {} end
+function M.invalidate() cache = {}; filter_cache = {} end
 
 function M.items(force)
   if not cache[force.index] then
@@ -20,6 +20,7 @@ function M.items(force)
 end
 
 function M.filters(force)
+  if filter_cache[force.index] then return filter_cache[force.index] end
   local names, filters = {}, {}
   for name in pairs(M.items(force)) do names[#names + 1] = name end
   table.sort(names)
@@ -28,6 +29,7 @@ function M.filters(force)
   if #filters == 0 then
     filters = { { filter = "type", type = "item" }, { filter = "type", type = "item", invert = true, mode = "and" } }
   end
+  filter_cache[force.index] = filters
   return filters
 end
 

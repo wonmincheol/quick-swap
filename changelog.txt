@@ -1,4 +1,19 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.7
+Date: 2026-09-13
+  Changes:
+    - Factorio 2.1 package of the 0.3.6 release cleanup.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.6
+Date: 2026-09-13
+  Changes:
+    - Remove unused legacy cursor navigation and duplicate group lookup code.
+    - Cache item picker filters per force and refresh them with research changes.
+    - Update documentation, local validation records, and explicit release package contents.
+    - Set the mod author to DarknessMincho.
+
+---------------------------------------------------------------------------------------------------
 Version: 0.3.5
 Date: 2026-09-13
   Changes:

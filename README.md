@@ -1,10 +1,10 @@
 # Quick Swap
 
-Factorio 2.0+ mod for quickly swapping belts, pipes, and electric poles with
-the mouse wheel.
+Factorio mod for swapping building items with the mouse wheel using customizable
+ten-column groups. Belt, pipe, and electric-pole layouts are included as defaults.
 
 The implemented behavior is documented in
-[the Korean feature specification](docs/FEATURE_SPEC.md).
+[the Korean custom group specification](docs/CUSTOM_GROUPS_SPEC.md).
 
 ## What is included
 
@@ -32,8 +32,8 @@ placement items are excluded. Regular items with an entity placement result are 
 ## Install for development
 
 1. Place this folder in Factorio's `mods` directory as `quick-swap`, or run the
-   packaging script to create `quick-swap_0.3.4.zip`. The archive contains a
-   top-level `quick-swap_0.3.4` directory, as Factorio expects.
+   packaging script to create `quick-swap_0.3.6.zip`. The archive contains a
+   top-level `quick-swap_0.3.6` directory, as Factorio expects.
 2. Start Factorio, enable **Quick Swap**, then load or create a save.
 3. Click **Quick Swap** at the top left to edit groups, then **Apply**.
 4. Hold a registered building item and use Shift-wheel (horizontal) or Ctrl-wheel (vertical).
@@ -46,12 +46,13 @@ When releasing, update both `info.json` and `changelog.txt`; name the archive
 ## Factorio-version support
 
 Factorio permits a mod manifest to name only one major game version. The source
-manifest targets every 2.0.x release. Use the packaging script to create a
+manifest targets Factorio 2.0. Runtime checks currently use 2.1.17; see
+[validation results and remaining checks](docs/VALIDATION.md). Use the packaging script to create a
 separate, installable archive for each supported major version:
 
 ```powershell
-.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.3.4
-.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.3.5
+.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.3.6
+.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.3.7
 ```
 
 The resulting archives are written to `dist\Factorio-2.0` and

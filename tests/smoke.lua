@@ -20,6 +20,13 @@ function M.run(player)
   check(not groups.supported("blueprint"), "blueprint excluded")
   local allowed = unlocks.items(player.force)
   check(allowed["transport-belt"] and not allowed["express-transport-belt"], "research filter")
+  local function selectable(name)
+    for _, filter in ipairs(unlocks.filters(player.force)) do
+      if filter.name == name then return true end
+    end
+    return false
+  end
+  check(selectable("transport-belt") and not selectable("express-transport-belt"), "picker filters before research")
   local all = function() return true end
   check(groups.target(state.config, "transport-belt", "horizontal", 1, all) == "underground-belt", "horizontal")
   check(groups.target(state.config, "transport-belt", "horizontal", -1, all) == "splitter", "wrap across blanks")
@@ -140,6 +147,7 @@ function M.run(player)
   player.force.research_all_technologies()
   unlocks.invalidate()
   check(unlocks.items(player.force)["express-transport-belt"], "research refresh")
+  check(selectable("express-transport-belt"), "cached picker filters refresh after research")
   state.config = storage.quick_swap_editor_expected
   state.config.groups[4] = nil
   gui.open(player)
