@@ -73,9 +73,14 @@ function cursor_swap.swap_from_inventory(player, candidate)
 
   -- Removing the target first makes room for the original cursor stack. Every
   -- failure path restores the inventory before returning.
-  if inventory.remove(target) ~= target.count then return false end
-  if inventory.insert(current) ~= current.count then
-    inventory.remove(current); inventory.insert(target); return false
+  local removed = inventory.remove(target)
+  if removed ~= target.count then
+    inventory.insert(definition(target.name, removed, target.quality)); return false
+  end
+  local inserted = inventory.insert(current)
+  if inserted ~= current.count then
+    inventory.remove(definition(current.name, inserted, current.quality))
+    inventory.insert(target); return false
   end
   if not cursor.set_stack(target) then
     inventory.remove(current); inventory.insert(target); return false
@@ -90,10 +95,16 @@ function cursor_swap.swap_in_remote_view(player, candidate)
   -- Remote view uses a cursor ghost rather than an inventory-backed stack.
   -- Assigning the ghost also works when entering the map with a real stack and
   -- avoids consuming or creating inventory items.
-  player.cursor_ghost = { name = candidate.name, quality = current.quality }
+  local ok = pcall(function()
+    player.cursor_ghost = { name = candidate.name, quality = current.quality }
+  end)
   local ghost = player.cursor_ghost
-  return ghost and prototype_name(ghost.name) == candidate.name
+  local success = ok and ghost and prototype_name(ghost.name) == candidate.name
     and prototype_name(ghost.quality) == current.quality
+  if not success then
+    player.cursor_ghost = { name = current.name, quality = current.quality }
+  end
+  return success
 end
 
 return cursor_swap

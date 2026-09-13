@@ -1,49 +1,44 @@
 # Quick Swap
 
-Factorio 2.0+ mod for quickly swapping belts, pipes, and electric poles with
-the mouse wheel.
+Factorio mod for swapping building items with the mouse wheel using customizable
+ten-column groups. Belt, pipe, and electric-pole layouts are included as defaults.
 
 The implemented behavior is documented in
-[the Korean feature specification](docs/FEATURE_SPEC.md).
+[the Korean custom group specification](docs/CUSTOM_GROUPS_SPEC.md).
 
 ## What is included
 
-- Valid Factorio 2.0 manifest in `info.json`.
-- Four namespaced mouse-wheel inputs, rebindable in Controls.
-- Dynamic catalogue for belts, pipes, and electric poles, including compatible
-  content from other mods.
-- English localisation and a Mod Portal-compatible changelog.
-- No DLC-specific feature flags and no direct edits to another mod's prototypes.
-  It can therefore load in vanilla Factorio 2.0 and with Space Age or other mods.
+- A native Factorio logistics-style editor opened from the top-left Quick Swap button.
+- Personal groups with exactly ten columns and automatically growing rows.
+- Click a slot to select an unlocked regular building item; right-click to clear it.
+- Group rename, enable/disable, delete, up/down ordering, and independent horizontal/vertical wrapping.
+- Four directional shortcuts displayed using the game's current key-binding localisation.
+- Apply saves the draft; Cancel discards it. Closing a dirty window asks before discarding.
+- Default belt, pipe, and electric-pole groups, including compatible mod prototypes.
+- Shift-wheel moves horizontally; Ctrl-wheel moves vertically. Wheel up means right/down.
+- Empty, locked, missing, and unavailable slots are skipped within the same row or column.
+- The first enabled group containing the held item wins; swapping never falls through to another group.
+- Character mode requires unlocked items in inventory and chooses the highest available quality.
+- Map/remote mode uses unlocked cursor ghosts and preserves the selected quality.
+- Successful swaps suppress wheel zoom; otherwise vanilla wheel actions remain available.
 
-The mod swaps the held belt, underground belt, or splitter according to the
-[feature specification](docs/FEATURE_SPEC.md). It uses each placed entity's
-`belt_speed`, so vanilla, Space Age, and compatible mod-added tiers stay
-separate. Shift-wheel also swaps pipes with underground pipes, and steps
-through electric poles from wooden poles up to substations without wrapping;
-unavailable intermediate poles are skipped. Character control in game view
-consumes only matching inventory items. TAB/map view and remote control ignore
-inventory and select only force-unlocked items while preserving the remote
-cursor quality already selected through Factorio. Vanilla wheel behavior remains
-available when no swap occurs, including cycling blueprints in a blueprint
-book. After a successful swap, the zoom limits are temporarily locked at the
-current level so the camera does not move, then restored on the following tick.
-Swapping uses the amount actually available (up to the target item's stack
-limit) and returns the original stack to inventory. When the target exists in
-multiple qualities, it always uses the highest quality available for that item.
+The implementation and acceptance checklist are documented in
+[the custom group specification](docs/CUSTOM_GROUPS_SPEC.md). GUI configuration is
+stored per player in the save. No row or group count limit is imposed. Very large
+grids currently create all their slot widgets; rendering virtualization is a future optimization.
+Special stacks (blueprints, tools, tagged items, inventory-bearing or spoilable items) and tile
+placement items are excluded. Regular items with an entity placement result are supported.
 
 ## Install for development
 
 1. Place this folder in Factorio's `mods` directory as `quick-swap`, or run the
-   packaging script to create `quick-swap_0.2.8.zip`. The archive contains a
-   top-level `quick-swap_0.2.8` directory, as Factorio expects.
+   packaging script to create `quick-swap_0.3.6.zip`. The archive contains a
+   top-level `quick-swap_0.3.6` directory, as Factorio expects.
 2. Start Factorio, enable **Quick Swap**, then load or create a save.
-3. Hold a belt, pipe, underground pipe, or electric pole and use
-   `Shift + mouse wheel`. `Control + mouse wheel` changes belt tiers.
+3. Click **Quick Swap** at the top left to edit groups, then **Apply**.
+4. Hold a registered building item and use Shift-wheel (horizontal) or Ctrl-wheel (vertical).
 
-The Controls menu names these bindings **Quick item swap** (Shift-wheel by
-default) and **Belt tier swap** (Control-wheel by default). Each wheel direction
-can be rebound independently by the player.
+Each wheel direction can be rebound independently in the Controls menu.
 
 When releasing, update both `info.json` and `changelog.txt`; name the archive
 `quick-swap_<version>.zip`.
@@ -51,12 +46,13 @@ When releasing, update both `info.json` and `changelog.txt`; name the archive
 ## Factorio-version support
 
 Factorio permits a mod manifest to name only one major game version. The source
-manifest targets every 2.0.x release. Use the packaging script to create a
+manifest targets Factorio 2.0. Runtime checks currently use 2.1.17; see
+[validation results and remaining checks](docs/VALIDATION.md). Use the packaging script to create a
 separate, installable archive for each supported major version:
 
 ```powershell
-.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.2.8
-.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.2.9
+.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.3.6
+.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.3.7
 ```
 
 The resulting archives are written to `dist\Factorio-2.0` and

@@ -1,4 +1,70 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.7
+Date: 2026-09-13
+  Changes:
+    - Factorio 2.1 package of the 0.3.6 release cleanup.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.6
+Date: 2026-09-13
+  Changes:
+    - Remove unused legacy cursor navigation and duplicate group lookup code.
+    - Cache item picker filters per force and refresh them with research changes.
+    - Update documentation, local validation records, and explicit release package contents.
+    - Set the mod author to DarknessMincho.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.5
+Date: 2026-09-13
+  Changes:
+    - Factorio 2.1 package of the 0.3.4 position editor removal.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.4
+Date: 2026-09-13
+  Changes:
+    - Remove click-based slot movement and swapping; native logistics drag-and-drop is not exposed for custom slot GUIs.
+    - Retain key-binding labels, group ordering, normal item selection, and right-click clearing.
+    - Preserve all previously saved item positions and group configurations.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.3
+Date: 2026-09-13
+  Features:
+    - Factorio 2.1 package of the 0.3.2 editor improvements.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.2
+Date: 2026-09-13
+  Features:
+    - Display all four directional controls using Factorio's native key-binding localisation.
+    - Reorder groups with compact up/down buttons; the first enabled group takes priority.
+    - Add position editing: click a source and destination to move or swap slots within or between groups.
+    - Reject cross-group moves that would create duplicate entries, without changing either group.
+    - Keep order and position edits in the draft until Apply; Cancel restores the saved configuration.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.1
+Date: 2026-09-13
+  Features:
+    - Factorio 2.1 package of the 0.3.0 custom swap group editor.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2026-09-13
+  Features:
+    - Add a native logistics-style editor with ten-column, vertically growing personal groups.
+    - Configure unlocked building items, group names, enable states, and per-axis wrapping.
+    - Move horizontally with Shift-wheel and vertically with Control-wheel.
+    - Provide editable belt, pipe, and electric-pole presets.
+    - Preserve unapplied edits until Apply or Cancel; confirm discarding on close.
+  Changes:
+    - Require unlocked recipes in character mode as well as remote mode.
+    - Preserve missing and locked slots without shifting other items.
+  Bugfixes:
+    - Roll back only the quantity actually inserted when returning a cursor stack fails.
+
+---------------------------------------------------------------------------------------------------
 Version: 0.2.9
 Date: 2026-09-04
   Features:

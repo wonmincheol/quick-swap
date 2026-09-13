@@ -8,8 +8,9 @@ param(
   [string]$ModVersion
 )
 
+$ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$versions = @{ "2.0" = "0.2.8"; "2.1" = "0.2.9" }
+$versions = @{ "2.0" = "0.3.6"; "2.1" = "0.3.7" }
 if (-not $ModVersion) {
   $ModVersion = $versions[$FactorioVersion]
 }
@@ -18,20 +19,14 @@ $outputDirectory = Join-Path $projectRoot ("dist\\Factorio-" + $FactorioVersion)
 $archivePath = Join-Path $outputDirectory ("quick-swap_" + $ModVersion + ".zip")
 $temporaryRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("quick-swap-" + [guid]::NewGuid())
 $stagingDirectory = Join-Path $temporaryRoot ("quick-swap_" + $ModVersion)
-$excludedScriptExtensions = @(".exe", ".bat", ".ps1", ".sh", ".py")
 
 try {
   New-Item -ItemType Directory -Path $stagingDirectory -Force | Out-Null
-  foreach ($item in Get-ChildItem -LiteralPath $projectRoot -Force) {
-    if ($item.Name -notin @(".git", "dist")) {
-      Copy-Item -LiteralPath $item.FullName -Destination $stagingDirectory -Recurse -Force
-    }
+  # Explicit release contents keep local settings and future development files out.
+  foreach ($name in @("info.json", "control.lua", "data.lua", "scripts", "locale",
+      "thumbnail.png", "changelog.txt", "README.md", "docs")) {
+    Copy-Item -LiteralPath (Join-Path $projectRoot $name) -Destination $stagingDirectory -Recurse -Force -ErrorAction Stop
   }
-
-  # Development and packaging tools are not part of the Factorio runtime.
-  Get-ChildItem -LiteralPath $stagingDirectory -Recurse -File |
-    Where-Object { $_.Extension.ToLowerInvariant() -in $excludedScriptExtensions } |
-    Remove-Item -Force
 
   $manifestPath = Join-Path $stagingDirectory "info.json"
   $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
@@ -48,6 +43,12 @@ try {
 }
 finally {
   if (Test-Path -LiteralPath $temporaryRoot) {
-    Remove-Item -LiteralPath $temporaryRoot -Recurse -Force
+    $resolvedStagingRoot = [System.IO.Path]::GetFullPath($temporaryRoot)
+    $expectedTempParent = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath()).TrimEnd('\')
+    if ((Split-Path -Parent $resolvedStagingRoot) -ne $expectedTempParent -or
+        (Split-Path -Leaf $resolvedStagingRoot) -notlike "quick-swap-*") {
+      throw "Refusing to remove an unexpected staging path: $resolvedStagingRoot"
+    }
+    Remove-Item -LiteralPath $resolvedStagingRoot -Recurse -Force
   }
 }

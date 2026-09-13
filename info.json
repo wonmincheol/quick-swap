@@ -1,9 +1,9 @@
 {
   "name": "quick-swap",
-  "version": "0.2.8",
+  "version": "0.3.6",
   "title": "Quick Swap",
-  "author": "quick-swap contributors",
+  "author": "DarknessMincho",
   "factorio_version": "2.0",
   "dependencies": ["base >= 2.0.0"],
-  "description": "Quickly swap held belts, pipes, and electric poles with the mouse wheel."
+  "description": "Swap building items with the mouse wheel using customizable ten-column groups."
 }
