@@ -1,18 +1,7 @@
-local belt_catalog = require("scripts.belt_catalog")
+local groups = require("scripts.groups")
+local unlocks = require("scripts.unlocks")
+local gui = require("scripts.gui")
 local cursor_swap = require("scripts.cursor_swap")
-
-local function is_unlocked_for_force(force, candidate)
-  for _, recipe in pairs(force.recipes) do
-    if recipe.enabled then
-      for _, product in ipairs(recipe.products) do
-        if product.type == "item" and product.name == candidate.name then
-          return true
-        end
-      end
-    end
-  end
-  return false
-end
 
 local function uses_character_inventory(player)
   return player.controller_type == defines.controllers.character
@@ -20,10 +9,11 @@ local function uses_character_inventory(player)
 end
 
 local function can_use_candidate(player, candidate)
+  if not unlocks.items(player.force)[candidate.name] then return false end
   if uses_character_inventory(player) then
     return cursor_swap.has_inventory_stack(player, candidate)
   end
-  return is_unlocked_for_force(player.force, candidate)
+  return true
 end
 
 local function swap(player, candidate)
@@ -76,23 +66,56 @@ end)
 local function cycle(kind, direction)
   return function(event)
     local player = game.get_player(event.player_index)
-    if not player then return end
+    if not player or gui.is_open(player) then return end
     local use_inventory = uses_character_inventory(player)
-    local current = belt_catalog.get_cursor_candidate(player, not use_inventory)
-    if not current then return end
     local cursor = cursor_swap.get_definition(player, not use_inventory)
-    if not cursor then return end
-    local quality = cursor.quality
-    local target = belt_catalog["find_" .. kind .. "_target"](current, direction, function(candidate)
-      return can_use_candidate(player, candidate)
+    if not cursor or not groups.supported(cursor.name) then return end
+    local name = groups.target(groups.get(player.index).config, cursor.name, kind, direction, function(item)
+      return can_use_candidate(player, { name = item, item_prototype = prototypes.item[item] })
     end)
-    if target then
+    if name then
+      local target = { name = name, item_prototype = prototypes.item[name] }
       if swap(player, target) then lock_zoom_until_next_tick(player, event.tick) end
     end
   end
 end
 
-script.on_event("quick-swap-cycle-kind-next", cycle("kind", 1))
-script.on_event("quick-swap-cycle-kind-previous", cycle("kind", -1))
-script.on_event("quick-swap-cycle-tier-next", cycle("tier", 1))
-script.on_event("quick-swap-cycle-tier-previous", cycle("tier", -1))
+script.on_event("quick-swap-cycle-kind-next", cycle("horizontal", 1))
+script.on_event("quick-swap-cycle-kind-previous", cycle("horizontal", -1))
+script.on_event("quick-swap-cycle-tier-next", cycle("vertical", 1))
+script.on_event("quick-swap-cycle-tier-previous", cycle("vertical", -1))
+
+local function initialize()
+  unlocks.invalidate()
+  for _, player in pairs(game.players) do
+    gui.close(player)
+    groups.get(player.index)
+    gui.ensure_button(player)
+  end
+end
+script.on_init(initialize)
+script.on_configuration_changed(initialize)
+script.on_event({ defines.events.on_player_created, defines.events.on_player_joined_game }, function(event)
+  local player = game.get_player(event.player_index)
+  groups.get(player.index); gui.ensure_button(player)
+end)
+script.on_event(defines.events.on_player_removed, function(event)
+  if storage.quick_swap_players then storage.quick_swap_players[event.player_index] = nil end
+end)
+script.on_event(defines.events.on_gui_click, gui.click)
+script.on_event(defines.events.on_gui_checked_state_changed, gui.changed)
+script.on_event(defines.events.on_gui_elem_changed, gui.changed)
+script.on_event(defines.events.on_gui_closed, function(event)
+  if event.element and event.element.valid and event.element.name == "quick-swap-window" then
+    local player = game.get_player(event.player_index)
+    gui.request_close(player)
+    if gui.is_open(player) then player.opened = event.element end
+  end
+end)
+local function refresh_unlocks()
+  unlocks.invalidate()
+  for _, player in pairs(game.players) do gui.refresh(player) end
+end
+script.on_event({ defines.events.on_research_finished, defines.events.on_research_reversed,
+  defines.events.on_force_reset, defines.events.on_technology_effects_reset,
+  defines.events.on_player_changed_force, defines.events.on_forces_merged }, refresh_unlocks)

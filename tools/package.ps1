@@ -9,7 +9,7 @@ param(
 )
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$versions = @{ "2.0" = "0.2.8"; "2.1" = "0.2.9" }
+$versions = @{ "2.0" = "0.3.4"; "2.1" = "0.3.5" }
 if (-not $ModVersion) {
   $ModVersion = $versions[$FactorioVersion]
 }
@@ -23,7 +23,7 @@ $excludedScriptExtensions = @(".exe", ".bat", ".ps1", ".sh", ".py")
 try {
   New-Item -ItemType Directory -Path $stagingDirectory -Force | Out-Null
   foreach ($item in Get-ChildItem -LiteralPath $projectRoot -Force) {
-    if ($item.Name -notin @(".git", "dist")) {
+    if ($item.Name -notin @(".git", "dist", "tests", "tools") -and $item.Extension -ne ".log") {
       Copy-Item -LiteralPath $item.FullName -Destination $stagingDirectory -Recurse -Force
     }
   }
@@ -48,6 +48,12 @@ try {
 }
 finally {
   if (Test-Path -LiteralPath $temporaryRoot) {
-    Remove-Item -LiteralPath $temporaryRoot -Recurse -Force
+    $resolvedStagingRoot = [System.IO.Path]::GetFullPath($temporaryRoot)
+    $expectedTempParent = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath()).TrimEnd('\')
+    if ((Split-Path -Parent $resolvedStagingRoot) -ne $expectedTempParent -or
+        (Split-Path -Leaf $resolvedStagingRoot) -notlike "quick-swap-*") {
+      throw "Refusing to remove an unexpected staging path: $resolvedStagingRoot"
+    }
+    Remove-Item -LiteralPath $resolvedStagingRoot -Recurse -Force
   }
 }
