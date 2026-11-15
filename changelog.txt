@@ -1,4 +1,24 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.9
+Date: 2026-11-15
+  Bugfixes:
+    - Fix camera zoom jitter during Shift/Ctrl-wheel swaps in single-player and multiplayer.
+  Changes:
+    - Factorio 2.1 package of the 0.3.8 wheel-input fix and vanilla-input compatibility setting.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.8
+Date: 2026-11-15
+  Bugfixes:
+    - Consume Quick Swap shortcuts before conflicting game actions instead of changing camera zoom limits for one tick after each swap.
+    - Keep swap shortcuts from zooming at group boundaries or when a target is unavailable.
+    - Restore any pending zoom lock saved by an older version when upgrading.
+    - Ignore swap inputs over game GUIs.
+  Changes:
+    - Reserve the four swap shortcuts even when no swap occurs; ordinary wheel zoom remains available with default bindings.
+    - Add a startup setting to allow conflicting vanilla actions such as blueprint-book cycling, at the cost of allowing zoom during swaps.
+
+---------------------------------------------------------------------------------------------------
 Version: 0.3.7
 Date: 2026-09-13
   Changes:

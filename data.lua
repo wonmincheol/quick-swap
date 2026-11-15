@@ -12,10 +12,10 @@ for _, input in ipairs(inputs) do
   -- Remote/map controllers are treated as spectating for custom-input
   -- dispatch. Without this flag the wheel event never reaches control.lua.
   input.enabled_while_spectating = true
-  -- Let Factorio process the same wheel input so context-sensitive vanilla
-  -- actions, such as cycling a blueprint book, remain available. When a swap
-  -- succeeds, control.lua temporarily locks zoom until the following tick.
-  input.consuming = "none"
+  -- Block conflicting game actions before they reach the camera. Changing
+  -- zoom_limits in a Lua event is too late to reliably suppress local zoom.
+  -- Consumption is unconditional, so offer an explicit vanilla-input opt-out.
+  input.consuming = settings.startup["quick-swap-allow-vanilla-inputs"].value and "none" or "game-only"
   input.action = "lua"
 end
 

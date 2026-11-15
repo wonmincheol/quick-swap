@@ -24,49 +24,10 @@ local function swap(player, candidate)
   end
 end
 
-local function lock_zoom_until_next_tick(player, tick)
-  storage.quick_swap_zoom_locks = storage.quick_swap_zoom_locks or {}
-  local pending = storage.quick_swap_zoom_locks[player.index]
-  if pending then
-    -- Several wheel steps can arrive during one tick. Keep the original limits
-    -- and postpone unlocking until all normal input handling has completed.
-    pending.unlock_tick = tick + 1
-  else
-    local zoom = player.zoom
-    local zoom_limits = player.zoom_limits
-    storage.quick_swap_zoom_locks[player.index] = {
-      zoom_limits = zoom_limits,
-      unlock_tick = tick + 1
-    }
-
-    -- The custom-input event runs before Factorio's normal input event. Clamp
-    -- both ends to the current zoom so the following wheel action cannot move
-    -- the camera; retain the view threshold to avoid changing render modes.
-    player.zoom_limits = {
-      closest = { zoom = zoom },
-      furthest = { zoom = zoom },
-      furthest_game_view = zoom_limits.furthest_game_view
-    }
-  end
-end
-
-script.on_event(defines.events.on_tick, function(event)
-  local locks_by_player = storage.quick_swap_zoom_locks
-  if not locks_by_player then return end
-
-  for player_index, pending in pairs(locks_by_player) do
-    if event.tick >= pending.unlock_tick then
-      local player = game.get_player(player_index)
-      if player then player.zoom_limits = pending.zoom_limits end
-      locks_by_player[player_index] = nil
-    end
-  end
-end)
-
 local function cycle(kind, direction)
   return function(event)
     local player = game.get_player(event.player_index)
-    if not player or gui.is_open(player) then return end
+    if not player or event.in_gui or gui.is_open(player) then return end
     local use_inventory = uses_character_inventory(player)
     local cursor = cursor_swap.get_definition(player, not use_inventory)
     if not cursor or not groups.supported(cursor.name) then return end
@@ -75,7 +36,7 @@ local function cycle(kind, direction)
     end)
     if name then
       local target = { name = name, item_prototype = prototypes.item[name] }
-      if swap(player, target) then lock_zoom_until_next_tick(player, event.tick) end
+      swap(player, target)
     end
   end
 end
@@ -86,6 +47,13 @@ script.on_event("quick-swap-cycle-tier-next", cycle("vertical", 1))
 script.on_event("quick-swap-cycle-tier-previous", cycle("vertical", -1))
 
 local function initialize()
+  -- Old saves can contain a one-tick zoom lock. Restore it once on upgrade;
+  -- new input handling never writes the camera or installs a tick handler.
+  for player_index, pending in pairs(storage.quick_swap_zoom_locks or {}) do
+    local player = game.get_player(player_index)
+    if player then player.zoom_limits = pending.zoom_limits end
+  end
+  storage.quick_swap_zoom_locks = nil
   unlocks.invalidate()
   for _, player in pairs(game.players) do
     gui.close(player)

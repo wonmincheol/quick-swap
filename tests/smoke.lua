@@ -4,7 +4,8 @@ local M = {}
   local unlocks = require("scripts.unlocks")
   local swap = require("scripts.cursor_swap")
   local editor = require("tests.editor")
-function M.run(player)
+  local input_tests = require("tests.input")
+function M.run(player, initialize)
   local checks = 0
   local function check(value, text)
     assert(value, "QUICK SWAP: " .. text); checks = checks + 1
@@ -129,12 +130,11 @@ function M.run(player)
   local input = script.get_event_handler("quick-swap-cycle-kind-next")
   input { player_index = player.index, tick = game.tick }
   check(player.cursor_stack.name == "underground-belt", "input handler connected")
-  check(storage.quick_swap_zoom_locks[player.index] ~= nil, "successful input locks zoom")
-  script.get_event_handler(defines.events.on_tick) { tick = game.tick + 1 }
-  check(storage.quick_swap_zoom_locks[player.index] == nil, "zoom restored next tick")
+  check(storage.quick_swap_zoom_locks == nil, "successful input does not lock zoom")
+  check(script.get_event_handler(defines.events.on_tick) == nil, "no tick-based camera correction")
   gui.open(player)
   input { player_index = player.index, tick = game.tick }
-  check(player.cursor_stack.name == "underground-belt" and not storage.quick_swap_zoom_locks[player.index], "editor blocks swap")
+  check(player.cursor_stack.name == "underground-belt" and storage.quick_swap_zoom_locks == nil, "editor blocks swap")
   gui.close(player)
   player.set_controller { type = defines.controllers.remote }
   player.cursor_ghost = { name = "transport-belt", quality = "normal" }
@@ -148,6 +148,7 @@ function M.run(player)
   unlocks.invalidate()
   check(unlocks.items(player.force)["express-transport-belt"], "research refresh")
   check(selectable("express-transport-belt"), "cached picker filters refresh after research")
+  input_tests.run(player, check, initialize)
   state.config = storage.quick_swap_editor_expected
   state.config.groups[4] = nil
   gui.open(player)
