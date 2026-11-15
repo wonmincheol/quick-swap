@@ -20,8 +20,8 @@ The implemented behavior is documented in
 - The first enabled group containing the held item wins; swapping never falls through to another group.
 - Character mode requires unlocked items in inventory and chooses the highest available quality.
 - Map/remote mode uses unlocked cursor ghosts and preserves the selected quality.
-- Swap shortcuts consume conflicting game actions before zoom can occur, even at group boundaries.
-- Ordinary mouse-wheel zoom remains available with the default Shift/Ctrl bindings.
+- Native blueprint-book controls remain available for inventory books and books held directly from the library.
+- Swap shortcuts pass through to vanilla actions; normal zoom can also occur during building-item swaps.
 
 The implementation and acceptance checklist are documented in
 [the custom group specification](docs/CUSTOM_GROUPS_SPEC.md). GUI configuration is
@@ -33,8 +33,8 @@ placement items are excluded. Regular items with an entity placement result are 
 ## Install for development
 
 1. Place this folder in Factorio's `mods` directory as `quick-swap`, or run the
-   packaging script to create `quick-swap_0.3.8.zip`. The archive contains a
-   top-level `quick-swap_0.3.8` directory, as Factorio expects.
+   packaging script to create `quick-swap_0.3.10.zip`. The archive contains a
+   top-level `quick-swap_0.3.10` directory, as Factorio expects.
 2. Start Factorio, enable **Quick Swap**, then load or create a save.
 3. Click **Quick Swap** at the top left to edit groups, then **Apply**.
 4. Hold a registered building item and use Shift-wheel (horizontal) or Ctrl-wheel (vertical).
@@ -43,32 +43,41 @@ placement items are excluded. Regular items with an entity placement result are 
 
 Each wheel direction can be rebound independently in the Controls menu.
 
-The four swap shortcuts are reserved even when the cursor has no swap target or
-quick swapping is disabled in the editor. This also blocks conflicting vanilla
-actions such as Shift-wheel blueprint-book cycling. To share the shortcuts with
-vanilla actions, enable **Settings → Mod settings → Startup → Quick Swap → Allow
-vanilla actions on Quick Swap shortcuts** and restart the game. In that mode,
-vanilla zoom can also occur during swaps. Quick Swap never adjusts camera zoom
-or zoom limits during input handling in either mode.
+All four swap shortcuts allow the same input to reach Factorio's native controls.
+Quick Swap leaves inventory blueprint books and blueprint-library records alone;
+Factorio handles their selection, nested books, and current control bindings.
+The Shift/Ctrl-wheel swap bindings are unchanged. Vanilla zoom can also occur
+during building-item swaps. Quick Swap does not change zoom or zoom limits while
+handling inputs.
+
+The compatibility decision for 0.3.10/0.3.11 is to preserve the existing swap keys
+and native library-book controls. Zooming while swapping belts or other building
+items is accepted behavior. The API limits and this decision are recorded in the
+[validation notes](docs/VALIDATION.md#변경과-동작-선택).
+
+The `quick-swap-allow-vanilla-inputs` startup setting from 0.3.8/0.3.9 has been
+removed. Native input is always allowed, including when an older installation
+saved that setting as disabled. No compatibility setting needs to be enabled.
 
 For multiplayer, the server and every client must load the same mod release.
 Update the server during a planned maintenance window before synchronizing clients.
-Release 0.3.7 and earlier do not contain the current wheel-input fix. Verify
-`Loading mod quick-swap 0.3.9` in the startup log for Factorio 2.1, and leave the vanilla-input setting off for zoom
-suppression. The input prototypes are loaded at startup; replacing the ZIP while
+Release 0.3.9 still blocks native book controls by default. Verify
+`Loading mod quick-swap 0.3.11` in the startup log for Factorio 2.1 before testing
+the restored book controls. The input prototypes are loaded at startup; replacing the ZIP while
 the server is running does not update its active input handling.
 
 ## Factorio-version support
 
 Factorio permits a mod manifest to name only one major game version. The source
 manifest targets Factorio 2.0. Runtime checks currently use 2.1.24; see
-[validation results and remaining checks](docs/VALIDATION.md). Manual single-player
-and multiplayer tests also confirmed the wheel-zoom fix. Use the packaging script to create a
+[validation results and remaining checks](docs/VALIDATION.md). Native inventory-book
+and library-book cycling were also checked with actual wheel input in an isolated client.
+Use the packaging script to create a
 separate, installable archive for each supported major version:
 
 ```powershell
-.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.3.8
-.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.3.9
+.\tools\package.ps1 -FactorioVersion 2.0 # produces version 0.3.10
+.\tools\package.ps1 -FactorioVersion 2.1 # produces version 0.3.11
 ```
 
 The resulting archives are written to `dist\Factorio-2.0` and

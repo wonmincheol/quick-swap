@@ -21,13 +21,10 @@ with tempfile.TemporaryDirectory(prefix="quick-swap-test-") as directory:
     mods = work / "mods"
     mod = mods / "quick-swap"
     mod.mkdir(parents=True)
-    for name in ("control.lua", "data.lua", "settings.lua", "info.json"):
+    for name in ("control.lua", "data.lua", "info.json"):
         shutil.copy2(root / name, mod / name)
     for name in ("scripts", "locale", "tests"):
         shutil.copytree(root / name, mod / name)
-    if "--vanilla-inputs" in sys.argv:
-        settings_file = mod / "settings.lua"
-        settings_file.write_text(settings_file.read_text().replace("default_value = false", "default_value = true"))
     manifest = json.loads((mod / "info.json").read_text())
     manifest["factorio_version"] = ".".join(version.split(".")[:2])
     (mod / "info.json").write_text(json.dumps(manifest), encoding="utf-8")

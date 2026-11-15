@@ -10,7 +10,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$versions = @{ "2.0" = "0.3.8"; "2.1" = "0.3.9" }
+$versions = @{ "2.0" = "0.3.10"; "2.1" = "0.3.11" }
 if (-not $ModVersion) {
   $ModVersion = $versions[$FactorioVersion]
 }
@@ -23,7 +23,7 @@ $stagingDirectory = Join-Path $temporaryRoot ("quick-swap_" + $ModVersion)
 try {
   New-Item -ItemType Directory -Path $stagingDirectory -Force | Out-Null
   # Explicit release contents keep local settings and future development files out.
-  foreach ($name in @("info.json", "control.lua", "data.lua", "settings.lua", "scripts", "locale",
+  foreach ($name in @("info.json", "control.lua", "data.lua", "scripts", "locale",
       "thumbnail.png", "changelog.txt", "README.md", "docs")) {
     Copy-Item -LiteralPath (Join-Path $projectRoot $name) -Destination $stagingDirectory -Recurse -Force -ErrorAction Stop
   }

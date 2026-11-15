@@ -14,10 +14,9 @@ function M.run(player, check, initialize)
     { "quick-swap-cycle-tier-next", "transport-belt", "fast-transport-belt" },
     { "quick-swap-cycle-tier-previous", "fast-transport-belt", "transport-belt" }
   }
-  local consuming = settings.startup["quick-swap-allow-vanilla-inputs"].value and "none" or "game-only"
   for _, action in ipairs(actions) do
     local prototype = prototypes.custom_input[action[1]]
-    check(prototype.consuming == consuming and prototype.enabled_while_spectating,
+    check(prototype.consuming == "none" and prototype.enabled_while_spectating,
       "native input policy: " .. action[1])
   end
 
@@ -68,7 +67,29 @@ function M.run(player, check, initialize)
     input("quick-swap-cycle-kind-next")
     check(held() == "transport-belt" and unchanged(), "disabled input keeps camera: " .. mode)
     state.config.enabled = true
+    player.clear_cursor()
+    player.cursor_stack.set_stack { name = "blueprint-book", count = 1 }
+    local book = player.cursor_stack
+    -- Use the 2.0.0 export format for both supported game-version packages.
+    local function blueprint(name)
+      return { item = "blueprint", version = 562949953421312,
+        entities = { { entity_number = 1, name = name, position = { x = 0, y = 0 } } } }
+    end
+    local book_data = { blueprint_book = { item = "blueprint-book", version = 562949953421312,
+      active_index = 0, blueprints = {
+        { index = 0, blueprint = blueprint("transport-belt") },
+        { index = 2, blueprint = blueprint("pipe") }
+      } } }
+    check(book.import_stack("0" .. helpers.encode_string(helpers.table_to_json(book_data))) == 0,
+      "sparse native book fixture: " .. mode)
+    local original_book = book.export_stack()
+    for _, action in ipairs(actions) do
+      input(action[1])
+      check(book.valid_for_read and book.name == "blueprint-book" and book.export_stack() == original_book
+        and unchanged(), "book remains native: " .. mode .. " " .. action[1])
+    end
     if mode == defines.controllers.character then
+      cursor("transport-belt")
       player.get_main_inventory().clear()
       input("quick-swap-cycle-kind-next")
       check(held() == "transport-belt" and unchanged(), "missing inventory keeps camera")

@@ -28,6 +28,10 @@ local function cycle(kind, direction)
   return function(event)
     local player = game.get_player(event.player_index)
     if not player or event.in_gui or gui.is_open(player) then return end
+    -- Library books use cursor_record rather than an inventory-backed stack.
+    -- Never let a leftover remote ghost take precedence over a blueprint.
+    local stack = player.cursor_stack
+    if player.cursor_record or (stack and stack.valid_for_read and stack.is_blueprint_book) then return end
     local use_inventory = uses_character_inventory(player)
     local cursor = cursor_swap.get_definition(player, not use_inventory)
     if not cursor or not groups.supported(cursor.name) then return end

@@ -1,6 +1,6 @@
 # 편집 기능 개선 — 공식 자료와 구현 결정
 
-대상 버전: Quick Swap 0.3.8 (Factorio 2.0), 0.3.9 (Factorio 2.1).
+대상 버전: Quick Swap 0.3.10 (Factorio 2.0), 0.3.11 (Factorio 2.1).
 편집 조작에 관한 API 결정은 0.3.4/0.3.5와 동일하다.
 휠 입력 차단 정책과 이번 패치 검증 결과는 [검증 기록](VALIDATION.md)에 정리한다.
 

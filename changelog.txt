@@ -1,4 +1,23 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.11
+Date: 2026-11-15
+  Bugfixes:
+    - Restore native blueprint-book wheel controls for inventory books and blueprint-library records.
+  Changes:
+    - Factorio 2.1 package of the 0.3.10 blueprint-book compatibility fix.
+    - Preserve the existing Shift/Ctrl-wheel bindings and native library-book controls; zoom during building-item swaps is accepted compatibility behavior.
+
+---------------------------------------------------------------------------------------------------
+Version: 0.3.10
+Date: 2026-11-15
+  Bugfixes:
+    - Pass all four swap inputs through to Factorio so native blueprint-book controls remain available.
+    - Explicitly exclude blueprint-library records and held blueprint books from Quick Swap cursor changes.
+  Changes:
+    - Remove the vanilla-input startup setting; vanilla input is always allowed, including when an older save stored the setting as disabled.
+    - Keep the existing Shift/Ctrl-wheel bindings. Vanilla zoom can also occur during building-item swaps.
+
+---------------------------------------------------------------------------------------------------
 Version: 0.3.9
 Date: 2026-11-15
   Bugfixes:
